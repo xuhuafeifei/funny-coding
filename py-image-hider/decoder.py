@@ -1,8 +1,8 @@
 from PIL import Image
 import numpy as np
 
-merge_file_path = "image1/result-291600.jpg"
-cnt = int(merge_file_path.split("-")[-1].split(".jpg")[0])
+merge_file_path = "image1/result-291600.png"
+cnt = int(merge_file_path.split("-")[-1].split(".png")[0])
 
 print(cnt)
 
@@ -32,4 +32,4 @@ for i in range(1, shape[0], 2):
 
 # 转换为 uint8 并保存
 res_image = np.array(res_image)
-Image.fromarray(res_image).save("./image1/decode.jpg")
+Image.fromarray(res_image).save("./image1/decode.png")

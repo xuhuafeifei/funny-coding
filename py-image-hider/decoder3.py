@@ -1,7 +1,8 @@
 from PIL import Image
 import numpy as np
+from main3 import N
 
-merge_file_path = "image2/result-291600.png"
+merge_file_path = "image3/result-18225.png"
 cnt = int(merge_file_path.split("-")[-1].split(".png")[0])
 
 print(cnt)
@@ -10,16 +11,16 @@ print(cnt)
 img = np.array(Image.open(merge_file_path))
 shape = img.shape
 col = shape[1]
-t_col = col // 2
+t_col = col // N
 
 # 初始化最终图像
 res_image = []
 
-for i in range(1, shape[0], 2):
+for i in range(1, shape[0], N):
     row = []
     if cnt == 0:
         break
-    for j in range(1, shape[1], 2):
+    for j in range(1, shape[1], N):
         if cnt == 0:
             break
         row.append(img[i][j])
@@ -32,4 +33,4 @@ for i in range(1, shape[0], 2):
 
 # 转换为 uint8 并保存
 res_image = np.array(res_image)
-Image.fromarray(res_image).save("./image2/decode.png")
+Image.fromarray(res_image).save("./image3/decode.png")

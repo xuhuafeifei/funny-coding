@@ -34,4 +34,4 @@ for i in range(1, ls[0], 2):
         cnt += 1
 
 # 将large_matrix写入文件
-Image.fromarray(large_matrix).save("./image1/result-" + str(cnt) + ".png")
+Image.fromarray(large_matrix).save("./image1/result-" + str(cnt) + "x" + str(ss[0]) + ".png")

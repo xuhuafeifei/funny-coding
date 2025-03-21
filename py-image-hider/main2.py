@@ -29,9 +29,9 @@ def smaple(mat, i, j):
     return mat[i][j]
 
 # 缩放small_matrix
-for i in range(1, ss[0] - 1, 2):
+for i in range(1, ss[0], 2):
     row = []
-    for j in range(1, ss[1] - 1, 2):
+    for j in range(1, ss[1], 2):
         row.append(smaple(small_matrix, i, j))
     small_scale_matrix.append(row)
 
@@ -46,10 +46,10 @@ cnt = 0
 def pos_in_matrix():
     return (cnt // ss[1], cnt % ss[1])
 
-for i in range(1, ls[0] - 1, 2):
-    for j in range(1, ls[1] - 1, 2):
+for i in range(1, ls[0], 2):
+    for j in range(1, ls[1], 2):
         x, y = pos_in_matrix()
-        if cnt >= ss[0] * ss[1]:
+        if cnt > ss[0] * ss[1]:
             break
         large_matrix[i][j] = small_scale_matrix[x][y]
         cnt += 1

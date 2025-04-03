@@ -10,9 +10,10 @@ if N & 1 != 1:
     print("N只能输入基数")
     exit()
 
-large_scale = 3
+large_scale = 10
 
 large_file_path = "input/bulaien1080x1080.png"
+# large_file_path = "input/meinv1.jpg"
 small_file_path = "input/shenli.png"
 
 large_matrix = np.array(Image.open(large_file_path))

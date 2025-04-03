@@ -19,5 +19,9 @@ public class Result<T> {
         return new Result<>(code, msg, null);
     }
 
+    public static <T> Result<T> error(int code, String msg, T data) {
+        return new Result<>(code, msg, data);
+    }
+
     // 省略getter/setter方法
 }

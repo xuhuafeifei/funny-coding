@@ -1,0 +1,172 @@
+<div id="content_views" class="markdown_views prism-atom-one-dark">
+ <svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><path stroke-linecap="round" d="M5,0 0,2.5 5,5z" id="raphael-marker-block" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path>
+ </svg>
+ <p></p>
+ <div class="toc">
+  <h4>文章目录</h4>
+  <ul>
+   <li>
+    <ul>
+     <li><a href="#the_fuck_6" rel="nofollow">the fuck是什么</a></li>
+     <li><a href="#_54" rel="nofollow">如何安装</a></li>
+     <li><a href="#_227" rel="nofollow">原理</a></li>
+     <li>
+      <ul>
+       <li><a href="#_234" rel="nofollow">模块划分</a></li>
+       <li><a href="#_256" rel="nofollow">模块介绍</a></li>
+       <li><a href="#_298" rel="nofollow">处理流程</a></li>
+       <li><a href="#get_corrected_commands_358" rel="nofollow">get_corrected_commands是如何工作的</a></li>
+      </ul></li>
+    </ul></li>
+  </ul>
+ </div>
+ <p></p>
+ <p></p>
+ <div class="csdn-video-box" data-report-view="{&quot;spm&quot;:&quot;3001.10261&quot;,&quot;extra&quot;:{&quot;id&quot;:&quot;kLWVLg8a-1742134894101&quot;}}"><iframe id="kLWVLg8a-1742134894101" frameborder="0" src="https://player.bilibili.com/player.html?aid=114159878413393" allowfullscreen="true" data-mediaembed="bilibili"></iframe>
+  <p>99% 的人都不知道的： 命令行竟然存在 fuck 命令！功能强大</p>
+ </div>
+ <p></p>
+ <h3><a id="the_fuck_6"></a>the fuck是什么</h3>
+ <p>thefuck是开源的命令行纠错工具，可以用于纠正执上一条执行错误的指令</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/c5f60cb6a0cd49d4ae494c4c2fe4cb4b.gif" alt="在这里插入图片描述"></p>
+ <p>常用Linux的小伙伴可能会遇到这样的问题，在输入指令时总是因为忘了添加sudo</p>
+ <p>导致权限不足无法执行</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/37d961f7f9894e80a147739dc9353856.png" alt="在这里插入图片描述"></p>
+ <p>如果指令很长，又忘了Linux光标跳转快捷键，就不得不猛敲键盘手动添加sudo</p>
+ <p>如果安装thefuck，只需对着键盘一顿fuck</p>
+ <p>正确的指令就会显示在终端</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/1e55a12ad20345a085b5946104115617.png" alt="在这里插入图片描述"></p>
+ <p>此外，thefuck还可以自动帮你输出安装工具</p>
+ <p>如果shell在执行时发现指令不存在</p>
+ <p>此时只需输入fuck</p>
+ <p>终端就会显示相应的纠正指令</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/24cee4df9c81429bbe10bb792b3e330b.png" alt="在这里插入图片描述"></p>
+ <h3><a id="_54"></a>如何安装</h3>
+ <p>既然fuck这么好用，那我该怎么安装呢？</p>
+ <p>thefuck支持多个操作系统</p>
+ <p>但不管是你使用的Mac，Linux，还是Windows</p>
+ <p>他们仨使安装过程都大同小异</p>
+ <p>下载python环境（大于3.5.0），安装thefuck，配置别名</p>
+ <p>首先是Windows</p>
+ <p>打开powershell</p>
+ <p>输入pip install thefuck</p>
+ <p>安装thefuck</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/a6dff1f698d24c43980e789fa923ba21.png" alt="在这里插入图片描述"></p>
+ <p>随后在powershell的配置文件中写入如下两条指令</p>
+ <pre><code class="prism language-shell"><span class="token variable">$env</span>:PYTHONIOENCODING<span class="token operator">=</span><span class="token string">"utf-8"</span>
+iex <span class="token string">"<span class="token variable"><span class="token variable">$(</span>thefuck <span class="token parameter variable">--alias</span><span class="token variable">)</span></span>"</span>
+</code></pre>
+ <p>重启powershell，即可完成配置</p>
+ <p>此时你可能会感到疑惑，powershell的配置，这是啥？我没有啊</p>
+ <p>没关系，只需短短三行指令，1秒解决你的疑惑</p>
+ <p>打开powershell，输入如下三条指令</p>
+ <pre><code class="prism language-shell"><span class="token builtin class-name">echo</span> <span class="token variable">$profile</span>
+
+Test-Path <span class="token variable">$profile</span>
+
+New-Item <span class="token parameter variable">-Path</span> <span class="token variable">$profile</span> <span class="token parameter variable">-Type</span> File –Force
+</code></pre>
+ <p><img src="https://i-blog.csdnimg.cn/direct/4e1fd559eb8f4e95b37ca9324a14df8d.png" alt="在这里插入图片描述"></p>
+ <p>在资源管理器中进入目录：<code>C:\Users\&lt;用户名&gt;\Documents\WindowsPowerShell</code></p>
+ <p>会发现目录下多出了Microsoft.PowerShell_profile.ps1文件</p>
+ <p>这就是powershell的配置信息</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/5b1edb5e3e7e432caef2795faf5ded76.png" alt="在这里插入图片描述"></p>
+ <p>每次powershell打开前都会加载该文件</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/0129ef0d60944dfc8559d4eec2650ddd.png" alt="在这里插入图片描述"></p>
+ <p>其次是Linux</p>
+ <p>依然是先安装thefuck</p>
+ <p>在终端输入如下指令</p>
+ <pre><code class="prism language-bash"><span class="token function">sudo</span> <span class="token function">apt</span> update <span class="token punctuation">\</span>
+<span class="token function">sudo</span> <span class="token function">apt</span> <span class="token function">install</span> python3-dev python3-pip python3-setuptools <span class="token punctuation">\</span>
+pip3 <span class="token function">install</span> thefuck <span class="token parameter variable">--user</span>
+</code></pre>
+ <p>随后输入vim ~/.bashrc</p>
+ <p>打开shell的配置文件</p>
+ <p>并在末尾写入eval $(thefuck --alias)</p>
+ <p>将fuck作为thefuck的别名</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/98025c9c49944c7994543fd0bf78ee00.png" alt="在这里插入图片描述"></p>
+ <p>退出.bashrc，并执行配置文件</p>
+ <p>此时可以正常使用fuck</p>
+ <p>看到这里，你可能会觉得，这有啥大不了的，不就是多打了几个字嘛，至于这么折腾？</p>
+ <p>欸嘿，您可别小看了程序员为了"偷懒"能搞出来的那些事儿。这群家伙为了少敲几下键盘，能想出各种奇葩的破事儿</p>
+ <p>Guido van Rossum在CWI研究所工作时，受够C那繁琐的语法，为了偷懒，徒手搓了个python。python因其简洁的语法被众多开发者喜爱，开发者们甚至打出了这样的口号，life is short, you need python</p>
+ <p>Max Howell在Mac上安装软件时受够手动编译依赖的痛苦，为了"偷懒"，愣是用Ruby撸了一套管理器，通过<code>brew install</code>一键解决依赖</p>
+ <p>这里说个小插曲，Google曾因Max Howell不会手写二叉树反转而拒绝其面试。因此只要答对这道题，您就可以超越世界级大牛，问鼎码林之巅</p>
+ <p>这里，需要额外提一嘴，一个比较操蛋的bug</p>
+ <p>fuck写错了</p>
+ <p>如果fuck写错没看出来，傻乎乎的以为下载出错，于是重新装了一遍</p>
+ <p>找问题配环境一小时，最后发现fuck打成funk，这回可真fuck了</p>
+ <h3><a id="_227"></a>原理</h3>
+ <p>不多BB，先放简化流程图</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/899b89ec7f2f40678511109767335039.jpeg" alt="在这里插入图片描述"></p>
+ <h4><a id="_234"></a>模块划分</h4>
+ <p>抛开和不同操作系统交互的模块，聚焦于更核心的逻辑</p>
+ <p>从宏观上，thefuck可以分为三大模块</p>
+ <p>解析器，流程控制模块，不同分支处理模块</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/4ab1dbc0836c499fb18a91ef7e036c06.png" alt="在这里插入图片描述"></p>
+ <p>分支处理继续细分，可得到help打印，版本打印，指令纠正等等<br> <img src="https://i-blog.csdnimg.cn/direct/6ce78d732bd24968be0a4425eec6e6d5.png" alt="在这里插入图片描述"></p>
+ <h4><a id="_256"></a>模块介绍</h4>
+ <p>解析器Parser，负责读取上一条用户输入的指令</p>
+ <p>并通过调用parse()方法将指令处理为系统可识别的对象</p>
+ <p>know_args</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/dbda01f901ba44dbbfdc694d9c210dde.png" alt="在这里插入图片描述"></p>
+ <p>之后，流程控制模块将根据know_args中</p>
+ <p>不同的数据信息进行不同的分支处理</p>
+ <p>譬如打印帮助文档</p>
+ <p>打印版本</p>
+ <p>打印别名</p>
+ <p>还有最重要的指令纠正，fix_command</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/a935f40ae98e4779bda7f28cdef5a2fc.png" alt="在这里插入图片描述"></p>
+ <h4><a id="_298"></a>处理流程</h4>
+ <p>这里我们直接放上完整的流程图</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/e089b95e96c14b62b4630a78f64dfb48.jpeg" alt="在这里插入图片描述"></p>
+ <p>其他模块无足轻重，让我们进入fix_command一探究竟</p>
+ <p>首先，thefuck会加载配置信息</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/da69d79643774c7faf0c94b018a24a9e.png" alt="在这里插入图片描述"></p>
+ <p>配置信息中包含诸多重要的内容</p>
+ <p>比如与规则相关的</p>
+ <p>需要排除的规则内容<code>exclude_rules</code></p>
+ <p>用户编写的匹配规则存储路径<code>user_dir</code></p>
+ <p>随后thefuck将处理know_args，进一步细化数据</p>
+ <p>得到系统上一次执行的脚本内容command</p>
+ <p><img src="https://i-blog.csdnimg.cn/direct/e2b27792f20f4bd199fbde22ae105c61.png" alt="在这里插入图片描述"></p>
+ <p>并将command传入get_corrected_commands方法</p>
+ <p>得到纠正的指令</p>
+ <p>最后将匹配得到的可能的纠正指令通过UI的方式输出</p>
+ <p>如此就是fuck纠正指令的完整流程</p>
+ <h4><a id="get_corrected_commands_358"></a>get_corrected_commands是如何工作的</h4>
+ <p><img src="https://i-blog.csdnimg.cn/direct/b19afd919e5448d982f612d7779584d9.png" alt="在这里插入图片描述"></p>
+ <p><code>get_corrected_commands</code>内部处理逻辑比较简单</p>
+ <ol>
+  <li>调用get_rules()方法，获取全部的规则</li>
+  <li>传入<code>command</code>（thefuck封装的系统上次执行的命令+命令输出结果等信息），调用<code>rule.is_match</code>方法，判断当前<code>rule</code>是否匹配command</li>
+  <li>返回所有可能的rule</li>
+ </ol>
+ <p>说白了，<code>get_corrected_commands</code>就是拿着command匹配所有规则，符合留下，不符合滚犊子</p>
+ <p>那么匹配规则如何确定呢？</p>
+ <p>我们看一个demo</p>
+ <pre><code class="prism language-py"><span class="token keyword">def</span> <span class="token function">match</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">if</span> <span class="token string">'not found'</span> <span class="token keyword">in</span> command<span class="token punctuation">.</span>output <span class="token keyword">or</span> <span class="token string">'not installed'</span> <span class="token keyword">in</span> command<span class="token punctuation">.</span>output<span class="token punctuation">:</span>
+        executable <span class="token operator">=</span> _get_executable<span class="token punctuation">(</span>command<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> <span class="token keyword">not</span> which<span class="token punctuation">(</span>executable<span class="token punctuation">)</span> <span class="token keyword">and</span> get_package<span class="token punctuation">(</span>executable<span class="token punctuation">)</span>
+    <span class="token keyword">else</span><span class="token punctuation">:</span>
+        <span class="token keyword">return</span> <span class="token boolean">False</span>
+
+
+<span class="token keyword">def</span> <span class="token function">get_new_command</span><span class="token punctuation">(</span>command<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    executable <span class="token operator">=</span> _get_executable<span class="token punctuation">(</span>command<span class="token punctuation">)</span>
+    name <span class="token operator">=</span> get_package<span class="token punctuation">(</span>executable<span class="token punctuation">)</span>
+    formatme <span class="token operator">=</span> shell<span class="token punctuation">.</span>and_<span class="token punctuation">(</span><span class="token string">'sudo apt-get install {}'</span><span class="token punctuation">,</span> <span class="token string">'{}'</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> formatme<span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> command<span class="token punctuation">.</span>script<span class="token punctuation">)</span>
+</code></pre>
+ <p>这是一个叫做<code>apt_get.py</code>的规则文件</p>
+ <p>他存在两个和新方法，分别是<code>match</code>和<code>get_new_command</code></p>
+ <p>在thefuck运行过程中，apt_get.py会被加载到内存，封装为<code>rule</code>对象</p>
+ <p>在thefuck处理得到command后，会调用<code>match</code>方法，判断command是否匹配<code>apt_get.py</code>规则</p>
+ <p>如果要匹配，那么command在终端输出的报错信息必须是<strong>not found</strong>或者<strong>not install</strong>，这样就说明用户输入指令出现的问题是找不到</p>
+ <p>如果找不到，就需要给出安装指令</p>
+ <p>那么新指令如何给出呢？——<code>get_new_command</code></p>
+ <p>当thefuck成功匹配<code>apt_get.py</code>规则后，在后续显示fix 指令时，会调用<code>get_new_command</code>方法，给出新的指令</p>
+ <p>于<code>apt_get.py</code>而言，他就负责从command中提取指令信息，最终返回<code>sudo apt get install xxx</code>指令</p>
+ <p>至此，完成所有的指令纠正功能</p>
+</div>

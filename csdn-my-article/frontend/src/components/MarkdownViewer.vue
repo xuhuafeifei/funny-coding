@@ -18,15 +18,15 @@
         placeholder="请输入文章 ID"
         class="token-input"
       />
-      <input
+      <!-- <input
         v-model="csdnToken"
         type="text"
         placeholder="请输入 CSDN Token"
         class="token-input"
-      />
+      /> -->
       <button
         @click="handleQuery"
-        :disabled="!articleId || !csdnToken"
+        :disabled="!articleId"
         class="query-btn"
       >
         查询
@@ -39,7 +39,7 @@
         <input
           type="radio"
           name="downloadType"
-          value="default"
+          value="0"
           v-model="downloadType"
         />
         默认下载（保留 CSDN 默认内容）
@@ -48,7 +48,7 @@
         <input
           type="radio"
           name="downloadType"
-          value="imageLinks"
+          value="1"
           v-model="downloadType"
         />
         图片链接下载（下载存储在 CSDN 的图片资源）
@@ -57,7 +57,7 @@
         <input
           type="radio"
           name="downloadType"
-          value="removeWatermark"
+          value="2"
           v-model="downloadType"
         />
         去除水印下载（自动裁剪图片）
@@ -77,6 +77,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import Vditor from 'vditor'
+import { get, post, put, del } from '../utils/api';
 import 'vditor/dist/index.css'
 
 // 定义组件属性
@@ -92,9 +93,9 @@ const editor = ref<HTMLElement | null>(null)
 let vditorInstance: Vditor | null = null
 
 // 文章 ID、CSDN Token 和下载选项
-const articleId = ref<string>('')
+const articleId = ref<string>('146302376')
 const csdnToken = ref<string>('')
-const downloadType = ref<string>('default') // 默认选择 "默认下载"
+const downloadType = ref<string>('0') // 默认选择 "默认下载"
 
 // 初始化编辑器
 onMounted(async () => {
@@ -132,53 +133,38 @@ onMounted(async () => {
 
 // 查询按钮逻辑
 const handleQuery = () => {
-  if (!articleId.value.trim() || !csdnToken.value.trim()) {
+  if (!articleId.value.trim()) {
     alert('请先填写文章 ID 和 CSDN Token！')
     return
   }
 
   // 模拟查询逻辑（可以根据实际需求替换为 API 请求）
   console.log('查询中，文章 ID:', articleId.value, 'CSDN Token:', csdnToken.value)
-  alert('查询成功！可以继续操作。')
+  const data = post("/api/getArticleContent", { "articleId":articleId.value });
+  data.then((data) => {
+    console.log(data); 
+    if (vditorInstance) {
+      vditorInstance.setValue(data.data.data); // 假设 data 是查询到的 Markdown 内容
+  }
+  })
+  // alert('查询成功！可以继续操作。')
 }
 
 // 下载 Markdown 文件
 const handleDownload = () => {
   if (!vditorInstance) return
+  console.log(downloadType.value)
+  // const data = post("/api/downloadArticle", { "articleId":articleId.value, "downloadType":downloadType });
+  // data.then((data) => {
+  //   console.log(data);
+  // })
+      // 构造请求数据
+    const postData = {
+      articleId: articleId.value,
+      downloadType: downloadType.value // 确保使用 .value
+    };
 
-  const content = vditorInstance.getValue() // 获取当前编辑器内容
-  let processedContent = content
-
-  // 根据下载选项处理内容
-  switch (downloadType.value) {
-    case 'default':
-      // 默认下载，不做任何处理
-      break
-    case 'imageLinks':
-      // 替换图片链接为可下载的链接（假设图片链接是防盗链的）
-      processedContent = content.replace(/!\[.*?\]\((.*?)\)/g, (_, url) => {
-        return `![图片](${url}?dl=1)` // 示例处理
-      })
-      break
-    case 'removeWatermark':
-      // 假设通过裁剪图片 URL 来去除水印
-      processedContent = content.replace(/!\[.*?\]\((.*?)\)/g, (_, url) => {
-        return `![图片](${url.replace(/\/watermark$/, '')})` // 示例处理
-      })
-      break
-  }
-
-  // 创建下载文件
-  const blob = new Blob([processedContent], { type: 'text/markdown' })
-  const url = URL.createObjectURL(blob)
-
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `article-${Date.now()}.md`
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
+    window.location.href = 'http://localhost:8080/api/downloadArticleSimple?articleId=' + postData.articleId + '&downloadType=' + postData.downloadType;
 }
 </script>
 

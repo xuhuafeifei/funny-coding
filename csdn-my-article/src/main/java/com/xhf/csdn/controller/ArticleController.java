@@ -55,7 +55,7 @@ public class ArticleController {
      */
     @GetMapping("/downloadArticleSimple")
     @CrossOrigin
-    public Result<String> downloadArticleSimple(@RequestParam("articleId") String articleId,
+    public void downloadArticleSimple(@RequestParam("articleId") String articleId,
                                                 @RequestParam("downloadType") int downloadType,
                                                 HttpServletResponse response) {
         // 实现文章下载逻辑
@@ -63,8 +63,6 @@ public class ArticleController {
         article.setArticleId(articleId);
         article.setDownloadType(downloadType);
         articleService.downloadArticle(article, response);
-
-        return Result.success("下载成功");
     }
 
     /**

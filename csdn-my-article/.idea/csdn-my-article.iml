@@ -122,5 +122,6 @@
     <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-util-sequence:0.64.8" level="project" />
     <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-util-visitor:0.64.8" level="project" />
     <orderEntry type="library" name="Maven: com.vladsch.flexmark:flexmark-youtrack-converter:0.64.8" level="project" />
+    <orderEntry type="library" name="Maven: net.coobird:thumbnailator:0.4.19" level="project" />
   </component>
 </module>

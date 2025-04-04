@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.xhf.csdn.utils.HtmlToMarkdownUtils;
 import com.xhf.csdn.utils.HttpClient;
+import net.coobird.thumbnailator.Thumbnails;
 import org.apache.http.impl.cookie.BasicClientCookie2;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -19,7 +20,10 @@ import org.jsoup.select.Elements;
 import com.xhf.csdn.model.HttpRequest;
 import com.xhf.csdn.model.HttpResponse;
 import org.springframework.stereotype.Service;
+
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse; // 添加缺少的导入语句
+import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 import java.io.File; // 添加缺少的导入语句
 import java.net.URLEncoder;
@@ -119,6 +123,10 @@ public class ArticleService {
         }
     }
 
+    private void imageLinkDownload(Article article, HttpServletResponse response) {
+        imageLinkDownload(article, response, false);
+    }
+
 
      /**
      * 处理图片链接下载（生成 ZIP 文件）
@@ -126,7 +134,7 @@ public class ArticleService {
      * @param article 文章对象
      * @param response HTTP 响应
      */
-     private void imageLinkDownload(Article article, HttpServletResponse response) {
+     private void imageLinkDownload(Article article, HttpServletResponse response, boolean removeWatermark) {
          // 临时目录路径（用于存储下载的图片）
          Path tempDir = null;
          try {
@@ -152,7 +160,7 @@ public class ArticleService {
 
                  String imageUrl = standardUrl != null ? standardUrl : imageReferences.get(referenceKey);
                  if (imageUrl != null) {
-                     String imageFileName = downloadImage(imageUrl, imagesDir);
+                     String imageFileName = downloadImage(imageUrl, imagesDir, removeWatermark);
                      String replacement = "![](images/" + imageFileName + ")";
                      matcher.appendReplacement(modifiedMarkdown, replacement);
                  }
@@ -218,15 +226,66 @@ public class ArticleService {
      * @param imagesDir 图片存储目录
      * @return 保存的图片文件名
      */
-    private String downloadImage(String imageUrl, Path imagesDir) throws IOException {
-        String fileName = "image-" + System.currentTimeMillis() + ".png"; // 生成唯一文件名
-        Path imagePath = imagesDir.resolve(fileName);
+    private String downloadImage(String imageUrl, Path imagesDir, boolean removeWatermark) throws IOException {
+        // 如果源文件不是图片
+        if (!imageUrl.toLowerCase().endsWith(".jpg") && !imageUrl.toLowerCase().endsWith(".png")) {
+            // 按照源文件的后缀下载
+            String[] split = imageUrl.split("\\.");
+            String suffix = split[split.length - 1];
+            String fileName = "image-" + System.currentTimeMillis() + suffix;
 
-        try (InputStream in = new URL(imageUrl).openStream()) {
-            Files.copy(in, imagePath);
+            Path imagePath = imagesDir.resolve(fileName);
+
+            try (InputStream in = new URL(imageUrl).openStream()) {
+                Files.copy(in, imagePath);
+            }
+            return fileName;
         }
-        return fileName;
+        if (!removeWatermark) {
+            // 如果不需要移除水印，直接下载图片并保存为 PNG
+            String fileName = "image-" + System.currentTimeMillis() + ".png"; // 生成唯一文件名
+            Path imagePath = imagesDir.resolve(fileName);
+
+            try (InputStream in = new URL(imageUrl).openStream()) {
+                Files.copy(in, imagePath);
+            }
+            return fileName;
+        } else {
+            // 如果需要移除水印（通过按比例缩小高度）
+            double ratio = 0.06;
+
+            // 生成临时文件路径
+            String tempFileName = "temp-image-" + System.currentTimeMillis() + ".jpg";
+            Path tempImagePath = imagesDir.resolve(tempFileName);
+
+            // 下载图片到临时文件
+            try (InputStream in = new URL(imageUrl).openStream()) {
+                Files.copy(in, tempImagePath);
+            }
+
+            // 使用 Thumbnailator 按比例缩小图片高度，并转换为 PNG
+            String outputFileName = "image-" + System.currentTimeMillis() + ".png";
+            Path outputPath = imagesDir.resolve(outputFileName);
+
+            // 获取源文件长度、宽度
+            BufferedImage image = ImageIO.read(tempImagePath.toFile());
+            int w = image.getWidth();
+            int h = image.getHeight();
+
+            int ceil = (int) Math.ceil(h * (1 - ratio));
+            Thumbnails.of(tempImagePath.toFile())
+                    .size(w, h)
+                    .sourceRegion(0 ,0, w, ceil)
+                    .outputFormat("png") // 输出格式为 PNG
+                    .toFile(outputPath.toFile());
+
+            // 删除临时文件
+            Files.deleteIfExists(tempImagePath);
+
+            return outputFileName;
+        }
     }
+
 
     /**
      * 递归添加目录到 ZIP 文件
@@ -269,6 +328,6 @@ public class ArticleService {
     }
 
     private void removeWatermarkDownload(Article article, HttpServletResponse response) {
-
+        imageLinkDownload(article, response, true);
     }
 }

@@ -154,16 +154,18 @@ public class ArticleService {
              Path imagesDir = tempDir.resolve("images");
              Files.createDirectories(imagesDir); // 创建 images 目录
 
+             int cnt = 0;
              while (matcher.find()) {
                  String standardUrl = matcher.group(1); // 标准语法中的 URL
                  String referenceKey = matcher.group(2); // 带引用语法中的引用标识符
 
                  String imageUrl = standardUrl != null ? standardUrl : imageReferences.get(referenceKey);
                  if (imageUrl != null) {
-                     String imageFileName = downloadImage(imageUrl, imagesDir, removeWatermark);
+                     String imageFileName = downloadImage(imageUrl, imagesDir, removeWatermark, cnt);
                      String replacement = "![](images/" + imageFileName + ")";
                      matcher.appendReplacement(modifiedMarkdown, replacement);
                  }
+                 cnt += 1;
              }
              matcher.appendTail(modifiedMarkdown);
 
@@ -226,13 +228,13 @@ public class ArticleService {
      * @param imagesDir 图片存储目录
      * @return 保存的图片文件名
      */
-    private String downloadImage(String imageUrl, Path imagesDir, boolean removeWatermark) throws IOException {
+    private String downloadImage(String imageUrl, Path imagesDir, boolean removeWatermark, int cnt) throws IOException {
         // 如果源文件不是图片
         if (!imageUrl.toLowerCase().endsWith(".jpg") && !imageUrl.toLowerCase().endsWith(".png")) {
             // 按照源文件的后缀下载
             String[] split = imageUrl.split("\\.");
             String suffix = split[split.length - 1];
-            String fileName = "image-" + System.currentTimeMillis() + suffix;
+            String fileName = "image-" + String.valueOf(cnt) + suffix;
 
             Path imagePath = imagesDir.resolve(fileName);
 
@@ -243,7 +245,7 @@ public class ArticleService {
         }
         if (!removeWatermark) {
             // 如果不需要移除水印，直接下载图片并保存为 PNG
-            String fileName = "image-" + System.currentTimeMillis() + ".png"; // 生成唯一文件名
+            String fileName = "image-" + String.valueOf(cnt) + ".png"; // 生成唯一文件名
             Path imagePath = imagesDir.resolve(fileName);
 
             try (InputStream in = new URL(imageUrl).openStream()) {
@@ -255,7 +257,7 @@ public class ArticleService {
             double ratio = 0.06;
 
             // 生成临时文件路径
-            String tempFileName = "temp-image-" + System.currentTimeMillis() + ".jpg";
+            String tempFileName = "temp-image-" + String.valueOf(cnt) + ".jpg";
             Path tempImagePath = imagesDir.resolve(tempFileName);
 
             // 下载图片到临时文件
@@ -264,7 +266,7 @@ public class ArticleService {
             }
 
             // 使用 Thumbnailator 按比例缩小图片高度，并转换为 PNG
-            String outputFileName = "image-" + System.currentTimeMillis() + ".png";
+            String outputFileName = "image-" + String.valueOf(cnt) + ".png";
             Path outputPath = imagesDir.resolve(outputFileName);
 
             // 获取源文件长度、宽度

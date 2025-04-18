@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { width: 300px; padding: 10px; font-family: Arial; }
+    h3 { margin-top: 0; }
+    #excludeList { width: 100%; margin: 10px 0; }
+    .item { display: flex; margin: 5px 0; }
+    .item input { flex-grow: 1; margin-right: 5px; }
+    .item button { background: #f44336; color: white; border: none; }
+    #addBtn { margin-top: 10px; width: 100%; }
+  </style>
+</head>
+<body>
+  <h3>exclusion setting</h3>
+  <div id="excludeList"></div>
+  <input type="text" id="newExclude" placeholder="please input exclusion item(such as: -csdn)">
+  <button id="addBtn">add exclusion</button>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

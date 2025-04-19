@@ -234,7 +234,7 @@ public class ArticleService {
             // 按照源文件的后缀下载
             String[] split = imageUrl.split("\\.");
             String suffix = split[split.length - 1];
-            String fileName = "image-" + String.valueOf(cnt) + suffix;
+            String fileName = "image-" + String.valueOf(cnt) + "." + suffix;
 
             Path imagePath = imagesDir.resolve(fileName);
 
